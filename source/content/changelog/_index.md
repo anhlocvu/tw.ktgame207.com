@@ -15,6 +15,9 @@ menu:
 
 All changes will be posted here.
 
+## Added on Sunday, January 18, 2026
+I tried to redo the pots craft a bit so that the sound was not double when getting
+
 ## update for version 14.02
 rename game: We have innovated this game by changing the name
 Developers can now access the new control panel.
