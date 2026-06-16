@@ -1,4 +1,5 @@
 baseURL = 'https://tw.ktgame207.com/'
 locale = 'en-us'
 title = 'Terra Wilds, official website'
+timeZone = "Asia/Ho_Chi_Minh"
 theme = "hguinav"
