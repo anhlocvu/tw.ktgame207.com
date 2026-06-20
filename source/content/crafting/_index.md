@@ -1,5 +1,6 @@
 ---
 title: "Crafting Catalog"
+pagesize: 5
 menu:
   main:
     name: "Crafting"
