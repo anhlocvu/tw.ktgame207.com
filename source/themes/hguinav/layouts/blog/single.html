@@ -4,13 +4,62 @@
 {{ define "main" }}
 <h1>{{ .Title }}</h1>
 {{- partial "terms.html" (dict "taxonomy" "authors" "page" .) }}
+
 {{- if ne .Lastmod .Date }}
-<p>{{ T "lastmod" (partial "content.html" (dict "page" . "value" "%updated%")) | safeHTML }}</p>
+<p class="hugo-post-date" data-utc="{{ .Lastmod.Format "2006-01-02T15:04:05Z07:00" }}">
+  {{ T "lastmod" (partial "content.html" (dict "page" . "value" "%updated%")) | safeHTML }}
+</p>
 {{- end }}
-<p>{{ T "published_on" (partial "content.html" (dict "page" . "value" "%date%")) | safeHTML }}</p>
+
+<p class="hugo-post-date" data-utc="{{ .Date.Format "2006-01-02T15:04:05Z07:00" }}">
+  {{ T "published_on" (partial "content.html" (dict "page" . "value" "%date%")) | safeHTML }}
+</p>
+
 {{- partial "terms.html" (dict "taxonomy" "categories" "page" .) }}
 <p>{{ T "totalwords" .WordCount }}</p>
 <p>{{ T "totaltime" .ReadingTime }}</p>
 <br>
 {{ .Render "content" }}
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const userLocale = navigator.language || 'en-US';
+  
+  // Cấu hình hiển thị ngày giờ theo ý bạn (tự chọn hiển thị thứ, ngày, giờ...)
+  const options = { 
+    weekday: 'long', 
+    year: 'numeric', 
+    month: 'long', 
+    day: 'numeric', 
+    hour: '2-digit', 
+    minute: '2-digit' 
+  };
+
+  const dateNodes = document.querySelectorAll(".hugo-post-date");
+  
+  dateNodes.forEach(function (el) {
+    const utcString = el.getAttribute("data-utc");
+    if (!utcString) return;
+
+    // 1. Chuyển đổi mốc thời gian gốc sang mốc thời gian theo máy người dùng
+    const dateObj = new Date(utcString);
+    const localizedTime = dateObj.toLocaleString(userLocale, options);
+
+    // 2. Thuật toán giữ lại phần chữ tiêu đề của Hugo và chỉ thay thế cụm ngày tháng
+    // Tìm các chuỗi ngày tháng cũ được sinh ra bởi Hugo (thường chứa năm hoặc số lẻ) để thay thế
+    const originalText = el.innerHTML;
+    
+    // Tìm vị trí dấu hai chấm (:) thường có sau chữ "Đăng ngày:" hoặc "Published on:"
+    const colonIndex = originalText.indexOf(':');
+    
+    if (colonIndex !== -1) {
+      // Giữ nguyên phần chữ phía trước dấu hai chấm, và cộng với thời gian đã được đổi múi giờ
+      el.innerHTML = originalText.substring(0, colonIndex + 1) + " " + localizedTime;
+    } else {
+      // Dự phòng: Nếu không có dấu hai chấm, ghi đè toàn bộ bằng thời gian mới
+      el.innerText = localizedTime;
+    }
+  });
+});
+</script>
 {{- end }}

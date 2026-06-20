@@ -1,5 +1,6 @@
 ---
 title: "General Guides"
+pagesize: 5
 menu:
   main:
     name: "General Guides"
